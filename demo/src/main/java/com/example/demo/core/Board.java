@@ -168,4 +168,8 @@ public class Board {
         return this.pits;
     }
 
+    public boolean finished(){
+        return this.finished;
+    }
+
 }
