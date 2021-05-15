@@ -18,13 +18,16 @@ public class Board {
     public static final int BASE_AMOUNT_OF_STONES = 6;
     private final List<Pit> pits;
 
-    private Player firstPlayer = null;
-    private Player secondPlayer = null;
+    private Player firstPlayer;
+    private Player secondPlayer;
 
     private boolean turn; // first player starts
 
+    private boolean finished;
+
     public Board(){
         this.pits = new ArrayList<>();
+        this.finished = false;
         for (int i = PIT_FIRST_INDEX; i < PLAYER_FIRST_BIG_PIT_INDEX; i++){
             this.pits.add(new Pit(i, BASE_AMOUNT_OF_STONES));
         }
@@ -143,6 +146,8 @@ public class Board {
         }
 
         if (firstPlayerStones == 0 || secondPlayerStones == 0){
+            this.finished = true;
+
             this.pits.get(PIT_FIRST_INDEX).addsStones(firstPlayerStones);
             this.pits.get(PIT_LAST_INDEX).addsStones(secondPlayerStones);
 
