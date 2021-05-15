@@ -9,14 +9,16 @@ import com.example.demo.exceptions.GameIsPlayingException;
 import org.springframework.data.util.Pair;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class JsonGameData {
     String activePlayer;
     String inactivePlayer;
     String gameState;
     String winner;
-    List<Pair<Integer, Integer>> allPits;
+    HashMap<Integer, Integer> allPits;
     List<Integer> pitsForMove;
 
     public JsonGameData(Game game){
@@ -32,9 +34,9 @@ public class JsonGameData {
             e.printStackTrace();
         }
         this.pitsForMove = board.getPitIdsForMove();
-        this.allPits = new ArrayList<>();
+        this.allPits = new HashMap<>();
         for(Pit pit: board.getPits()){
-            this.allPits.add(Pair.of(pit.getId(), pit.getStones()));
+            this.allPits.put(pit.getId(), pit.getStones());
         }
     }
 }
