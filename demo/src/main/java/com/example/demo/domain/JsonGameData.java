@@ -26,7 +26,8 @@ public class JsonGameData {
         this.gameState = board.finished() ? "Finished": "Playing";
         this.winner = "";
         try{
-            this.winner = board.getWinner().toString();
+            PlayerSides tmp = board.getWinner();
+            this.winner = tmp.toString();
         } catch (DrawException | GameIsPlayingException e) {
             e.printStackTrace();
         }
