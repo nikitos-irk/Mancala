@@ -141,6 +141,7 @@ public class Board {
         if (activePlayer.getBigPitIndex() != index){
             this.turn = !this.turn;
         }
+        this.checkState();
     }
 
     public List<Integer> getPitIdsForMove(){

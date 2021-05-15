@@ -27,9 +27,7 @@ public class JsonGameData {
         this.winner = "";
         try{
             this.winner = board.getWinner().toString();
-        } catch (DrawException e) {
-            e.printStackTrace();
-        } catch (GameIsPlayingException e) {
+        } catch (DrawException | GameIsPlayingException e) {
             e.printStackTrace();
         }
         this.pitsForMove = board.getPitIdsForMove();
