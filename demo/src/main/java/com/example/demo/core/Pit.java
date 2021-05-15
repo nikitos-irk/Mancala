@@ -3,7 +3,7 @@ package com.example.demo.core;
 public class Pit {
 
     private Integer value;
-    private Integer id;
+    final private Integer id;
 
     public Pit(Integer id, Integer value){
         this.id = id;
