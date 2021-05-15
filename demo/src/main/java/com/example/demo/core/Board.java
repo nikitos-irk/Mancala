@@ -1,6 +1,7 @@
 package com.example.demo.core;
 
-import com.example.demo.exceptions.WrongPairPlayerPit;
+import com.example.demo.exceptions.EmptyPitException;
+import com.example.demo.exceptions.WrongPairPlayerPitException;
 import com.example.demo.exceptions.WrongPlayerException;
 
 import java.util.ArrayList;
@@ -18,8 +19,8 @@ public class Board {
     public static final int BASE_AMOUNT_OF_STONES = 6;
     private final List<Pit> pits;
 
-    private Player firstPlayer;
-    private Player secondPlayer;
+    private final Player firstPlayer;
+    private final Player secondPlayer;
 
     private boolean turn; // first player starts
 
@@ -84,12 +85,17 @@ public class Board {
         }
     }
 
-    public void makeMove(Integer pitId, PlayerSides player) throws WrongPlayerException, WrongPairPlayerPit {
+    public void makeMove(Integer pitId, PlayerSides player)
+            throws WrongPlayerException, WrongPairPlayerPitException, EmptyPitException
+    {
         if (player != this.getActivePlayer().getPlayerSide()){
             throw new WrongPlayerException("That player is not active - [" + player.toString() + "]");
         }
         if (!this.getActivePlayer().checkPitId(pitId)){
-            throw new WrongPairPlayerPit("That player " + player.toString() + "is not the owner of that pit - [" + pitId.toString() + "]");
+            throw new WrongPairPlayerPitException("That player " + player.toString() + "is not the owner of that pit - [" + pitId.toString() + "]");
+        }
+        if (this.pits.get(pitId).getStones() == 0){
+            throw new EmptyPitException("Pit [" + pitId + "] is empty");
         }
         Player activePlayer = this.getActivePlayer();
         int value = this.pits.get(pitId).getStones();
