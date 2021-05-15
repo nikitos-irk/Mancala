@@ -1,6 +1,10 @@
 package com.example.demo.core;
 
+import com.example.demo.exceptions.WrongPairPlayerPit;
+import com.example.demo.exceptions.WrongPlayerException;
+
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.List;
 
 public class Board {
@@ -14,8 +18,8 @@ public class Board {
     public static final int BASE_AMOUNT_OF_STONES = 6;
     private final List<Pit> pits;
 
-    final private Player firstPlayer;
-    final private Player secondPlayer;
+    private Player firstPlayer = null;
+    private Player secondPlayer = null;
 
     private boolean turn; // first player starts
 
@@ -26,7 +30,8 @@ public class Board {
         }
         this.firstPlayer = new Player(PlayerSides.FIRST);
         this.secondPlayer = new Player(PlayerSides.SECOND);
-        this.turn = true;
+
+        this.turn = new Random().nextBoolean();
     }
 
     public Player getFirst() {
@@ -76,7 +81,13 @@ public class Board {
         }
     }
 
-    public void makeMove(int pitId) {
+    public void makeMove(Integer pitId, PlayerSides player) throws WrongPlayerException, WrongPairPlayerPit {
+        if (player != this.getActivePlayer().getPlayerSide()){
+            throw new WrongPlayerException("That player is not active - [" + player.toString() + "]");
+        }
+        if (!this.getActivePlayer().checkPitId(pitId)){
+            throw new WrongPairPlayerPit("That player " + player.toString() + "is not the owner of that pit - [" + pitId.toString() + "]");
+        }
         Player activePlayer = this.getActivePlayer();
         int value = this.pits.get(pitId).getStones();
         int index = pitId + 1;
