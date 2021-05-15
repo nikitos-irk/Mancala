@@ -1,8 +1,6 @@
 package com.example.demo.core;
 
-import com.example.demo.exceptions.EmptyPitException;
-import com.example.demo.exceptions.WrongPairPlayerPitException;
-import com.example.demo.exceptions.WrongPlayerException;
+import com.example.demo.exceptions.*;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -86,8 +84,14 @@ public class Board {
     }
 
     public void makeMove(Integer pitId, PlayerSides player)
-            throws WrongPlayerException, WrongPairPlayerPitException, EmptyPitException
+            throws WrongPlayerException, WrongPairPlayerPitException, EmptyPitException, IncorrectPitIdException, GameFinishedException
     {
+        if (this.finished) {
+            throw new GameFinishedException("Game is finished!");
+        }
+        if (pitId < PIT_FIRST_INDEX || pitId > PIT_LAST_INDEX){
+            throw new IncorrectPitIdException("Incorrect pitId - [" + pitId + "]");
+        }
         if (player != this.getActivePlayer().getPlayerSide()){
             throw new WrongPlayerException("That player is not active - [" + player.toString() + "]");
         }
