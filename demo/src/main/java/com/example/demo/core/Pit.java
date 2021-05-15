@@ -35,4 +35,8 @@ public class Pit {
     public boolean isBigPit(){
         return this.id == Board.PLAYER_FIRST_BIG_PIT_INDEX || this.id == Board.PLAYER_SECOND_BIG_PIT_INDEX;
     }
+
+    public Integer getId(){
+        return this.id;
+    }
 }

@@ -2,6 +2,7 @@ package com.example.demo.api.controller;
 
 import com.example.demo.core.Game;
 import com.example.demo.domain.GameManagment;
+import com.example.demo.domain.JsonGameData;
 import com.example.demo.exceptions.*;
 import com.example.demo.service.GameRepo;
 import org.slf4j.Logger;
@@ -51,12 +52,24 @@ public class UrlController {
             @PathVariable("id") String id,
             @RequestParam("player") String player,
             @RequestParam("pit") Integer pitId)
-            throws GameFinishedException,
+            throws
+            GameFinishedException,
             EmptyPitException,
             WrongPlayerException,
             IncorrectPitIdException,
             IncorrectPlayerName,
             WrongPairPlayerPitException {
         gameManagment.makeMove(id, player, pitId);
+    }
+
+    @ExceptionHandler(WrongGameIdException.class)
+    @RequestMapping(
+            method = RequestMethod.GET,
+            value = {"/games/{id}"},
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public JsonGameData getGameState(
+            @PathVariable("id") String id) throws WrongGameIdException  {
+                return gameManagment.getGameState(id);
     }
 }

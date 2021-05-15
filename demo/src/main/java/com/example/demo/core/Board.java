@@ -1,6 +1,7 @@
 package com.example.demo.core;
 
 import com.example.demo.exceptions.*;
+import org.springframework.data.util.Pair;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -34,6 +35,17 @@ public class Board {
         this.secondPlayer = new Player(PlayerSides.SECOND);
 
         this.turn = new Random().nextBoolean();
+    }
+
+    public PlayerSides getWinner() throws GameIsPlayingException, DrawException {
+        if (!this.finished) {
+            throw new GameIsPlayingException("Game has not finished yet!");
+        }
+        if (pits.get(PLAYER_FIRST_BIG_PIT_INDEX).getStones().equals(pits.get(PLAYER_SECOND_BIG_PIT_INDEX).getStones())){
+            throw new DrawException("Draw...");
+        }
+        return pits.get(PLAYER_FIRST_BIG_PIT_INDEX).getStones() > pits.get(PLAYER_SECOND_BIG_PIT_INDEX).getStones()
+                ? PlayerSides.FIRST : PlayerSides.SECOND;
     }
 
     public Player getFirst() {
@@ -168,7 +180,7 @@ public class Board {
         }
     }
 
-    List<Pit> getPits(){
+    public List<Pit> getPits(){
         return this.pits;
     }
 

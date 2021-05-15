@@ -45,4 +45,9 @@ public class GameManagment {
         }
         gameRepo.getGameStore().get(gameId).getBoard().makeMove(pitId, this.pm.get(player.toLowerCase()));
     }
+
+    public JsonGameData getGameState(String gameId) throws WrongGameIdException {
+        Game game = this.getGame(gameId);
+        return new JsonGameData(game);
+    }
 }
