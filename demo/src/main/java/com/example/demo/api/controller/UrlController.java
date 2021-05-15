@@ -19,17 +19,6 @@ public class UrlController {
     GameManagment gameManagment;
 
     @RequestMapping(
-            method = RequestMethod.GET,
-            value = {"/index"},
-            produces = MediaType.APPLICATION_JSON_VALUE
-    )
-    public HashMap<String, String> getIndex() {
-        HashMap<String, String> hashMap = new HashMap<>();
-        hashMap.put("Nikita", "Kovrigin");
-        return hashMap;
-    }
-
-    @RequestMapping(
             method = RequestMethod.POST,
             value = {"/games"},
             produces = MediaType.APPLICATION_JSON_VALUE
