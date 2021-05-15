@@ -11,11 +11,11 @@ public class Game {
         this.id = UUID.randomUUID().toString();
     }
 
-    Board getBoard(){
+    public Board getBoard(){
         return this.board;
     }
 
-    String getId(){
+    public String getId(){
         return this.id;
     }
 }
