@@ -1,11 +1,14 @@
-package com.example.demo.core;
+package com.example.demo.dbaccess.domain;
+
+import com.example.demo.core.Board;
 
 import java.util.UUID;
 
 public class Game {
 
     private final Board board;
-    final private String id;
+    private final String id;
+
     public Game(){
         this.board = new Board();
         this.id = UUID.randomUUID().toString();

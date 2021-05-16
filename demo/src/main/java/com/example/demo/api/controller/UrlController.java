@@ -1,26 +1,33 @@
 package com.example.demo.api.controller;
 
-import com.example.demo.core.Game;
-import com.example.demo.domain.GameManagment;
-import com.example.demo.domain.JsonGameData;
+import com.example.demo.api.converter.JsonGameConverter;
+import com.example.demo.api.dto.JsonResult;
+import com.example.demo.service.GameManagment;
+import com.example.demo.api.dto.JsonGameData;
 import com.example.demo.exceptions.*;
-import com.example.demo.service.GameRepo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.MediaType;
-import java.util.HashMap;
+
 import java.util.Set;
 
 
 @RestController
 public class UrlController {
 
-    @Autowired
-    GameManagment gameManagment;
+    private final GameManagment gameManagment;
+    private final JsonGameConverter gameConverter;
 
     private static final Logger LOGGER= LoggerFactory.getLogger(UrlController.class);
+
+
+    @Autowired
+    public UrlController(GameManagment gameManagment, JsonGameConverter gameConverter) {
+        this.gameManagment = gameManagment;
+        this.gameConverter = gameConverter;
+    }
 
     @RequestMapping(
             method = RequestMethod.POST,
@@ -28,9 +35,7 @@ public class UrlController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public String createGame() {
-        Game game = new Game();
-        gameManagment.addGame(game);
-        return game.getId();
+        return gameManagment.addGame().getId();
     }
 
     @RequestMapping(
@@ -42,7 +47,7 @@ public class UrlController {
         return gameManagment.getGamesIds();
     }
 
-    @ExceptionHandler(Exception.class)
+
     @RequestMapping(
             method = RequestMethod.POST,
             value = {"/games/{id}"},
@@ -58,18 +63,17 @@ public class UrlController {
             WrongPlayerException,
             IncorrectPitIdException,
             IncorrectPlayerName,
+            WrongGameIdException,
             WrongPairPlayerPitException {
         gameManagment.makeMove(id, player, pitId);
     }
 
-    @ExceptionHandler(WrongGameIdException.class)
     @RequestMapping(
             method = RequestMethod.GET,
             value = {"/games/{id}"},
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public JsonGameData getGameState(
-            @PathVariable("id") String id) throws WrongGameIdException  {
-                return gameManagment.getGameState(id);
+    public JsonResult<JsonGameData> getGameState(@PathVariable("id") String id) throws WrongGameIdException  {
+        return gameConverter.toJsonResult(gameManagment.getGameState(id));
     }
 }
