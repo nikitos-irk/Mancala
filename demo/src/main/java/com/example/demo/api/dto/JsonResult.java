@@ -12,11 +12,8 @@ public class JsonResult<T> {
     @JsonInclude(JsonInclude.Include.ALWAYS)
     T result;
     JsonRequestError error;
-
-
     public JsonResult() {
     }
-
     @JsonIgnore
     public JsonResult(JsonRequestError error) {
         this.error = error;
@@ -26,7 +23,6 @@ public class JsonResult<T> {
     public JsonResult(T result) {
         this.result = result;
     }
-
 
     public T getResult() {
         return result;

@@ -47,7 +47,6 @@ public class UrlController {
         return gameManagment.getGamesIds();
     }
 
-
     @RequestMapping(
             method = RequestMethod.POST,
             value = {"/games/{id}"},

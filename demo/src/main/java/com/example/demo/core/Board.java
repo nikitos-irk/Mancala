@@ -28,7 +28,7 @@ public class Board {
     public Board(){
         this.pits = new ArrayList<>();
         this.finished = false;
-        for (int i = PIT_FIRST_INDEX; i < PLAYER_SECOND_BIG_PIT_INDEX; i++){
+        for (int i = PIT_FIRST_INDEX; i <= PLAYER_SECOND_BIG_PIT_INDEX; i++){
             this.pits.add(new Pit(i, BASE_AMOUNT_OF_STONES));
         }
         this.firstPlayer = new Player(PlayerSides.FIRST);
@@ -115,6 +115,7 @@ public class Board {
         }
         Player activePlayer = this.getActivePlayer();
         int value = this.pits.get(pitId).getStones();
+        this.pits.get(pitId).setStones(0);
         int index = pitId + 1;
         while (value > 0) {
             if (index > PIT_LAST_INDEX){

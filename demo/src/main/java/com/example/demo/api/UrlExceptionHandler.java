@@ -25,5 +25,4 @@ public class UrlExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<Object> handleBaseException(HttpServletRequest req, Exception e) throws Exception {
         return new ResponseEntity(new JsonResult<>(new JsonRequestError(e, req.getRequestURL().toString())), HttpStatus.BAD_REQUEST);
     }
-
 }

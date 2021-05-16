@@ -15,16 +15,6 @@ import java.util.Set;
 public class GameManagment {
 
     private final GameRepository gameRepository;
-
-    private HashMap<String, PlayerSides> pm = new HashMap<>();
-
-
-    @PostConstruct
-    public void init() {
-        pm.put("first", PlayerSides.FIRST);
-        pm.put("second", PlayerSides.SECOND);
-    }
-
     @Autowired
     public GameManagment(GameRepository gameRepository) {
         this.gameRepository = gameRepository;
@@ -56,12 +46,19 @@ public class GameManagment {
             WrongPlayerException,
             IncorrectPitIdException,
             WrongPairPlayerPitException {
-        if (!pm.containsKey(player.toLowerCase())) {
+        PlayerSides playerSide = null;
+        for (PlayerSides ps : PlayerSides.values()) {
+            if (player.equals(ps.toString())) {
+                playerSide = ps;
+                break;
+            }
+        }
+        if (playerSide == null) {
             throw new IncorrectPlayerName("There is no such player as [" + player + "]");
         }
 
         Game game = getGame(gameId);
-        game.getBoard().makeMove(pitId, this.pm.get(player.toLowerCase()));
+        game.getBoard().makeMove(pitId, PlayerSides.valueOf(player.toUpperCase()));
     }
 
     public Game getGameState(String gameId) throws WrongGameIdException {

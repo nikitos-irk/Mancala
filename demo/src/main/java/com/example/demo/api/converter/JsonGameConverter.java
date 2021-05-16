@@ -16,14 +16,12 @@ import java.util.Map;
 @Component
 public class JsonGameConverter {
 
-
     public JsonGameData toJson(Game game) {
+
         JsonGameData json = new JsonGameData();
-
-
         Board board = game.getBoard();
+        String winner = "";
 
-        String winner ="";
         try{
             PlayerSides tmp = board.getWinner();
             winner = tmp.toString();
@@ -32,24 +30,18 @@ public class JsonGameConverter {
         }
         json.setWinner(winner);
         json.setPitsForMove(board.getPitIdsForMove());
-
         Map<Integer, Integer> allPits = new HashMap<>();
         for(Pit pit: board.getPits()){
             allPits.put(pit.getId(), pit.getStones());
         }
         json.setAllPits(allPits);
 
-
         json.setActivePlayer(game.getBoard().getActivePlayer().toString());
         json.setGameState(board.finished() ? "Finished": "Playing");
         json.setInactivePlayer(board.getInactivePlayer().toString());
-
         return json;
-
     }
-
     public JsonResult<JsonGameData> toJsonResult(Game game) {
         return new JsonResult<>(toJson(game));
     }
-
 }

@@ -24,4 +24,9 @@ public class Player {
         }
         return pitId > Board.PLAYER_FIRST_BIG_PIT_INDEX;
     }
+
+    @Override
+    public String toString() {
+        return this.id.toString();
+    }
 }
