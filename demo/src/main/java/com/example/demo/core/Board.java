@@ -21,7 +21,7 @@ public class Board {
     private final Player firstPlayer;
     private final Player secondPlayer;
 
-    private boolean turn; // first player starts
+    private boolean turn; // first player's move
 
     private boolean finished;
 
