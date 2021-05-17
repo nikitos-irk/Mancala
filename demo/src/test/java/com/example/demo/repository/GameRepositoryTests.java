@@ -29,7 +29,7 @@ public class GameRepositoryTests {
 
     @Test
     public void testCheckSizeOfRepo(){
-        Assertions.assertEquals(1, gameRepository.getAllGameIDs().size());
+        Assertions.assertTrue(gameRepository.getAllGameIDs().size() > 0);
     }
 
     @Test
