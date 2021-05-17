@@ -1,7 +1,6 @@
 package com.example.demo.core;
 
 import com.example.demo.exceptions.*;
-import org.springframework.data.util.Pair;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -56,6 +55,10 @@ public class Board {
         return this.secondPlayer;
     }
 
+    public void setTurn(PlayerSides side){
+        this.turn = side == PlayerSides.FIRST;
+    }
+
     public Player getActivePlayer() {
         if (this.turn){
             return firstPlayer;
@@ -79,7 +82,7 @@ public class Board {
     }
 
     public void checkStonesCapture(Integer index){
-        if (this.pits.get(index).getStones() != 1){
+        if (this.pits.get(index).getStones() != 1 || index == PLAYER_FIRST_BIG_PIT_INDEX || index == PLAYER_SECOND_BIG_PIT_INDEX || !getActivePlayer().pitBelongsToPlayer(index)){
             return;
         }
         Integer activePlayerStones = this.pits.get(index).getStones();
@@ -95,20 +98,28 @@ public class Board {
         }
     }
 
+    public void showPits(){
+        String line = "";
+        for (Pit a: getPits()){
+            line += a.getStones().toString() + " ";
+        }
+        System.out.println("pits = " + line);
+    }
+
     public void makeMove(Integer pitId, PlayerSides player)
             throws WrongPlayerException, WrongPairPlayerPitException, EmptyPitException, IncorrectPitIdException, GameFinishedException
     {
         if (this.finished) {
             throw new GameFinishedException("Game is finished!");
         }
-        if (pitId < PIT_FIRST_INDEX || pitId > PIT_LAST_INDEX){
+        if (pitId < PIT_FIRST_INDEX || pitId >= PIT_LAST_INDEX || pitId == PLAYER_FIRST_BIG_PIT_INDEX){
             throw new IncorrectPitIdException("Incorrect pitId - [" + pitId + "]");
         }
         if (player != this.getActivePlayer().getPlayerSide()){
             throw new WrongPlayerException("That player is not active - [" + player.toString() + "]");
         }
-        if (!this.getActivePlayer().checkPitId(pitId)){
-            throw new WrongPairPlayerPitException("That player " + player.toString() + "is not the owner of that pit - [" + pitId.toString() + "]");
+        if (!this.getActivePlayer().pitBelongsToPlayer(pitId)){
+            throw new WrongPairPlayerPitException("That player " + player.toString() + "is not the owner of that pit - [" + pitId + "]");
         }
         if (this.pits.get(pitId).getStones() == 0){
             throw new EmptyPitException("Pit [" + pitId + "] is empty");
@@ -122,7 +133,6 @@ public class Board {
                 index = 0;
                 continue;
             }
-
             // Skip big pit of another player
             if (this.pits.get(index).isBigPit() && activePlayer.getBigPitIndex() != index){
                 index++;
@@ -140,7 +150,7 @@ public class Board {
 
         // Check if last stone put into active player's big pit
         if (activePlayer.getBigPitIndex() != index){
-            this.turn = !this.turn;
+            this.setTurn(this.getInactivePlayer().getPlayerSide());
         }
         this.checkState();
     }
@@ -172,8 +182,8 @@ public class Board {
         if (firstPlayerStones == 0 || secondPlayerStones == 0){
             this.finished = true;
 
-            this.pits.get(PIT_FIRST_INDEX).addsStones(firstPlayerStones);
-            this.pits.get(PIT_LAST_INDEX).addsStones(secondPlayerStones);
+            this.pits.get(PLAYER_FIRST_BIG_PIT_INDEX).addsStones(firstPlayerStones);
+            this.pits.get(PLAYER_SECOND_BIG_PIT_INDEX).addsStones(secondPlayerStones);
 
             for (int i = PIT_FIRST_INDEX + 1; i < PIT_LAST_INDEX - 1; i++){
                 if (!this.pits.get(i).isBigPit())

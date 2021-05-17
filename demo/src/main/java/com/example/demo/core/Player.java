@@ -7,18 +7,18 @@ public class Player {
         this.id = id;
     }
 
-    PlayerSides getPlayerSide(){
+    public PlayerSides getPlayerSide(){
         return this.id;
     }
 
-    int getBigPitIndex(){
+    public int getBigPitIndex(){
         if (this.id == PlayerSides.FIRST) {
             return Board.PLAYER_FIRST_BIG_PIT_INDEX;
         }
         return Board.PLAYER_SECOND_BIG_PIT_INDEX;
     }
 
-    boolean checkPitId(Integer pitId){
+    public boolean pitBelongsToPlayer(Integer pitId){
         if (this.id == PlayerSides.FIRST) {
             return pitId <= Board.PLAYER_FIRST_BIG_PIT_INDEX;
         }
