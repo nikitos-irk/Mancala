@@ -47,14 +47,6 @@ public class Board {
                 ? PlayerSides.FIRST : PlayerSides.SECOND;
     }
 
-    public Player getFirst() {
-        return this.firstPlayer;
-    }
-
-    public Player getSecond() {
-        return this.secondPlayer;
-    }
-
     public void setTurn(PlayerSides side){
         this.turn = side == PlayerSides.FIRST;
     }
@@ -96,14 +88,6 @@ public class Board {
             this.pits.get(index).setStones(0);
             this.pits.get(this.getOppositePitIndex(index)).setStones(0);
         }
-    }
-
-    public void showPits(){
-        String line = "";
-        for (Pit a: getPits()){
-            line += a.getStones().toString() + " ";
-        }
-        System.out.println("pits = " + line);
     }
 
     public void makeMove(Integer pitId, PlayerSides player)

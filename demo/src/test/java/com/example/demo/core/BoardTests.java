@@ -1,12 +1,11 @@
-package com.example.demo.service;
+package com.example.demo.core;
 
-import com.example.demo.core.Board;
-import com.example.demo.core.Player;
 import com.example.demo.dbaccess.domain.Game;
 import com.example.demo.exceptions.GameIsPlayingException;
 import com.example.demo.exceptions.IncorrectPitIdException;
 import com.example.demo.exceptions.WrongPairPlayerPitException;
 import com.example.demo.exceptions.WrongPlayerException;
+import com.example.demo.service.GameManagment;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -23,9 +22,10 @@ import java.util.List;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class GameTests {
+public class BoardTests {
 
     Game game;
+    Board board;
 
     @Autowired
     private GameManagment gameManagment;
@@ -33,6 +33,7 @@ public class GameTests {
     @BeforeAll
     public void initGame() {
         game = gameManagment.addGame();
+        board = game.getBoard();
     }
 
     @Test
@@ -47,17 +48,11 @@ public class GameTests {
 
     @Test
     public void testCheckGameInitialState() {
-        Assertions.assertFalse(game.getBoard().finished());
-    }
-
-    @Test
-    public void testCheckNoWinnerYet() {
-        Assertions.assertThrows(GameIsPlayingException.class, () -> game.getBoard().getWinner());
+        Assertions.assertFalse(board.finished());
     }
 
     @Test
     public void testCheckInitialPitsStates() {
-        Board board = game.getBoard();
         Assertions.assertEquals(0, board.getPits().get(Board.PLAYER_FIRST_BIG_PIT_INDEX).getStones());
         Assertions.assertEquals(0, board.getPits().get(Board.PLAYER_SECOND_BIG_PIT_INDEX).getStones());
 
@@ -77,14 +72,17 @@ public class GameTests {
     }
 
     @Test
+    public void testCheckNoWinnerYet() {
+        Assertions.assertThrows(GameIsPlayingException.class, () -> board.getWinner());
+    }
+
+    @Test
     public void testCheckAvailablePitsForMoves() {
-        Board board = game.getBoard();
         Assertions.assertEquals(board.getPitIdsForMove().size(), 6);
     }
 
     @Test
     public void testCheckAvailablePitsForMovesBelongToActivePlayer() {
-        Board board = game.getBoard();
         board.getPitIdsForMove().forEach(
                 (pitId) -> Assertions.assertTrue(board.getActivePlayer().pitBelongsToPlayer(pitId))
         );
@@ -92,13 +90,11 @@ public class GameTests {
 
     @Test
     public void testCheckGigPitBelongsToActivePlayer() {
-        Board board = game.getBoard();
         Assertions.assertTrue(board.getActivePlayer().pitBelongsToPlayer(board.getActivePlayer().getBigPitIndex()));
     }
 
     @Test
     public void testCheckAvailablePitsForMovesBelongToInactivePlayer() {
-        Board board = game.getBoard();
         List<Integer> pitIds = new ArrayList<>();
         board.getPits().forEach((pit) -> pitIds.add(pit.getId()));
         pitIds.removeIf(index -> board.getActivePlayer().pitBelongsToPlayer(index));
@@ -107,13 +103,11 @@ public class GameTests {
 
     @Test
     public void testCheckGigPitBelongsToInactivePlayer() {
-        Board board = game.getBoard();
         Assertions.assertTrue(board.getInactivePlayer().pitBelongsToPlayer(board.getInactivePlayer().getBigPitIndex()));
     }
 
     @Test
     public void testMoveByIncorrectThrowsException() {
-        Board board = game.getBoard();
         Integer correctPitId = board.getPitIdsForMove().get(0);
         Player inactivePlayer = board.getInactivePlayer();
         Assertions.assertThrows(WrongPlayerException.class,
@@ -122,7 +116,6 @@ public class GameTests {
 
     @Test
     public void testMoveUsingInactivePitIdThrowsException() {
-        Board board = game.getBoard();
         Integer incorrectPitId = board.getOppositePitIndex(board.getPitIdsForMove().get(0));
         Player activePlayer = board.getActivePlayer();
         Assertions.assertThrows(WrongPairPlayerPitException.class,
@@ -131,7 +124,6 @@ public class GameTests {
 
     @Test
     public void testMoveUsingIncorrectPitIdThrowsException() {
-        Board board = game.getBoard();
         Player activePlayer = board.getActivePlayer();
         Assertions.assertThrows(IncorrectPitIdException.class,
                 () -> board.makeMove(-1, activePlayer.getPlayerSide()));
