@@ -1,6 +1,7 @@
 package com.example.demo.api.controller;
 
 import com.example.demo.api.converter.JsonGameConverter;
+import com.example.demo.api.dto.JsonMove;
 import com.example.demo.api.dto.JsonResult;
 import com.example.demo.service.GameManagment;
 import com.example.demo.api.dto.JsonGameData;
@@ -32,7 +33,7 @@ public class UrlController {
     @RequestMapping(
             method = RequestMethod.POST,
             value = {"/games"},
-            produces = MediaType.APPLICATION_JSON_VALUE
+            produces = MediaType.TEXT_PLAIN_VALUE
     )
     public String createGame() {
         return gameManagment.addGame().getId();
@@ -54,8 +55,7 @@ public class UrlController {
     )
     public void makeMove(
             @PathVariable("id") String id,
-            @RequestParam("player") String player,
-            @RequestParam("pit") Integer pitId)
+            @RequestBody JsonMove jsonMove)
             throws
             GameFinishedException,
             EmptyPitException,
@@ -63,8 +63,8 @@ public class UrlController {
             IncorrectPitIdException,
             IncorrectPlayerName,
             WrongGameIdException,
-            WrongPairPlayerPitException {
-        gameManagment.makeMove(id, player, pitId);
+            WrongPairPlayerPitException{
+        gameManagment.makeMove(id, jsonMove.getPlayer(), jsonMove.getPitId());
     }
 
     @RequestMapping(
